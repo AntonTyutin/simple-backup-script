@@ -21,6 +21,10 @@ dump() {
 sync() {
     rsync -aq --delete "$BACKUP_DIR/" "$1" || err "Ошибка синхронизации бэкапа $@"
 }
+purge() {
+    DAYS="$1"; shift
+    find "$BACKUP_DIR" \( "$@" \) -ctime +"$DAYS" -delete
+}
 
 CONFIG_FILE="$BACKUP_DIR/.backup.conf"
 

@@ -26,12 +26,15 @@ cat >~/backups/.backup.conf <<EOF
 
 # makes backup of "some-project" directory to tarball named "some-project"
 tgz ~/projects some-project
+purge 10 some-project_*
 
 # makes backup of "util1", "util2" and "util3" to tarball named "utils"
 tgz ~/bin utils util1 util2 util3
+purge 10 utils_*
 
 # makes dump of "project_someproject" database to gzipped sql-file named "project_someproject"
 dump project_someproject
+purge 30 project_someproject_*
 
 # stores backups to ssh-host
 sync backup.example.com:/backups/prod-1
