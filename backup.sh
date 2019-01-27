@@ -19,7 +19,7 @@ dump() {
     mysqldump --single-transaction "$DATABASE" | gzip > "$BACKUP_FILE" || err "Ошибка дампа $@"
 }
 sync() {
-    rsync -aq "$BACKUP_DIR/" "$1" || err "Ошибка синхронизации бэкапа $@"
+    rsync -aq --delete "$BACKUP_DIR/" "$1" || err "Ошибка синхронизации бэкапа $@"
 }
 
 CONFIG_FILE="$BACKUP_DIR/.backup.conf"
