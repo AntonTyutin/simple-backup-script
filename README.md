@@ -1,6 +1,6 @@
 # Simple backup bash-script
 
-Bash-script for making backups of files and mysql databases.
+Bash-script for making backups of files and MySQL databases.
 
 ### Requirements
 
@@ -19,7 +19,7 @@ Then make directory for storing backups
 mkdir ~/backups
 ```
 
-Create backup config file
+Create backup scenario file
 
 ```bash
 cat >~/backups/.backup.conf <<EOF
