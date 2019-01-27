@@ -30,5 +30,6 @@ CONFIG_FILE="$BACKUP_DIR/.backup.conf"
 
 [ -f "$CONFIG_FILE" ] || err "Файл конфигурации не найден в директории $BACKUP_DIR"
 
-. "$CONFIG_FILE"
+umask 0077
 
+. "$CONFIG_FILE"
