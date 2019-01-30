@@ -24,7 +24,7 @@ backup_files() {
         elif [ "$INCREMENTAL" -gt "0" ]
         then
             local INC_COUNT="$(find "$BACKUP_DIR" -name "${RECENT_BACKUP_NAME}_????????-??????_inc.tgz" -type f -newer "$LATEST_FULL_BACKUP" | wc -l)"
-            if [ "$INC_COUNT" -gte "$INCREMENTAL" ]
+            if [ "$INC_COUNT" -ge "$INCREMENTAL" ]
             then
                 MAKE_FULL_BACKUP=1
             fi
@@ -52,7 +52,7 @@ backup_mysql() {
 # purge <items to keep>
 purge() {
     [ -z "$RECENT_BACKUP_NAME" ] && err "purge command must follow by backup command"
-    ls -1 --sort=time "$BACKUP_DIR/${RECENT_BACKUP_NAME}_*" | tail -n$(("$1" + 1)) | xargs rm
+    ls -1 --sort=time "$BACKUP_DIR/${RECENT_BACKUP_NAME}_*" 2>/dev/null | tail -n$(expr "$1" + 1) | xargs rm 2>/dev/null
 }
 
 # upload_ssh <ssh destination>
@@ -69,7 +69,8 @@ upload_selectel() {
     local PASS="$1"; shift
     local BUCKET="$1"; shift
     [ -z "$SELECTEL_AUTH_TOKEN" ] \
-        && SELECTEL_AUTH_TOKEN="$(curl -si https://api.selcdn.ru/auth/v1.0 -H "X-Auth-User: ${ACCOUNT}_${USER}" -H "X-Auth-Key: $PASS" | grep x-auth-token | awk '{print $2}' | tr -d "\r\n")"
+        && SELECTEL_AUTH_TOKEN="$(curl -si https://api.selcdn.ru/auth/v1.0 -H "X-Auth-User: ${ACCOUNT}_${USER}" -H "X-Auth-Key: $PASS" | grep -i '^x-auth-token:' | awk '{print $2}' | tr -d "\r\n")"
+    [ -z "$SELECTEL_AUTH_TOKEN" ] && err "Unable to get Selectel Auth Token"
     curl -s -XPUT -H "X-Auth-Token: $SELECTEL_AUTH_TOKEN" "https://api.selcdn.ru/v1/SEL_$ACCOUNT/$BUCKET/$(basename $RECENT_BACKUP_FILE)" -T "$RECENT_BACKUP_FILE"
 }
 
